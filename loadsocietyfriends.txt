@@ -1,0 +1,46 @@
+<div class="content-left" style="overflow:auto"><p><b><center>Society Friends</center></b></p>
+<?php
+$db->getUserWithEmail($_SESSION["email"]);
+$response = json_decode($db->returnArray);
+$hall = $response[6];
+$email = $response[3];
+
+$db->getAllUserNameFromHall($email, $hall);
+$response2 = json_decode($db->returnArray);
+
+$db->updateUserOnline($email, "1");   
+
+$break = '<br/>';
+$result = count($response2);
+
+if($result == 5)
+  echo "No friends yet";
+else
+  for($i = 1; $i <= $result; $i = $i + 5)
+  {
+    if($response2[$i-1] == $email)
+      echo"";
+    elseif(($response2[$i+2] == 1) && ($response2[$i-1] != $email))
+    {
+      $db->getUserImageForUserID($response2[$i+3]);
+      $UserImage = json_decode($db->returnArray);
+      echo '<img class="UserImageOnline" src="data:image/jpeg;base64,'.$UserImage[1].'"/>';
+      printf ("%s %s\n", $response2[$i+1], $response2[$i]);
+      $db->getUserImageForUserID("ONLINEDOT");
+      $UserImage = json_decode($db->returnArray);
+      echo '<img class="OnlineDot" src="data:image/jpeg;base64,'.$UserImage[1].'"/>';
+      echo $break;
+    }
+    else
+    { 
+      $db->getUserImageForUserID($response2[$i+3]);
+      $UserImage = json_decode($db->returnArray);
+      echo '<img class="UserImageOnline" src="data:image/jpeg;base64,'.$UserImage[1].'"/>';
+      printf ("%s %s\n", $response2[$i+1], $response2[$i]);
+      echo $break;
+    }  
+  }
+?>
+
+
+  </div>
